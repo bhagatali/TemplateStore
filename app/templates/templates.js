@@ -14,9 +14,23 @@ angular.module('myApp.templates',['ngRoute'])
     
     
 }])
-.controller('TemplateController',['$scope',function($scope){
-    console.log('Hola Amigo!');
+.controller('TemplateController',['$scope','$http',function($scope,$http){
+    $http.get('json/templates.json').success(function(data){
+        $scope.templates = data;
+    });
 }])
-.controller('TemplateDetailsController',['$scope',function($scope){
-    console.log('Rang Birangi Duniya');
+.controller('TemplateDetailsController',['$scope',
+                                         '$http',
+                                         '$routeParams',
+                                         '$filter',
+                                         function($scope,$http,$routeParams,$filter){
+    var templateId = $routeParams.templateId;
+    $http.get('json/templates.json').success(function(data){
+        $scope.template = $filter('filter')(data,{id:templateId})[0];
+        $scope.mainImage = $scope.template.images[0].name;
+        $scope.setImage = function(image){
+            $scope.mainImage = image.name;
+        }
+    })
+                                             
 }])
